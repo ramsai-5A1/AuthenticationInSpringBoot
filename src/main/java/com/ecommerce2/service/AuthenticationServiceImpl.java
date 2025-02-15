@@ -3,19 +3,25 @@ package com.ecommerce2.service;
 import java.util.Optional;
 
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ecommerce2.dto.LoginResponse;
 import com.ecommerce2.dto.UserRequest;
 import com.ecommerce2.dto.UserResponse;
 import com.ecommerce2.entity.User;
 import com.ecommerce2.exception.InvalidCredentialsException;
 import com.ecommerce2.exception.UserNotFoundException;
 import com.ecommerce2.repository.UserRepositoryDao;
+import com.ecommerce2.utils.JwtUtil;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private UserRepositoryDao userRepositoryDao;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     public AuthenticationServiceImpl(UserRepositoryDao userRepositoryDao) {
         this.userRepositoryDao = userRepositoryDao;
@@ -30,18 +36,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public UserResponse handleLogin(UserRequest request) {
+    public LoginResponse handleLogin(UserRequest request) {
         Optional<User> userObj = userRepositoryDao.findByUserName(request.getUserName());
         if (!userObj.isPresent()) {
             throw new UserNotFoundException("Please signup first before logging in");
         }
 
         User user = userObj.get();
-        if (checkPassword(user.getHashedPassword(), request.getPassword())) {
-            return convertFromUserToUserResponse(user);
-        } else {
+        if (!checkPassword(request.getPassword(), user.getHashedPassword())) {
             throw new InvalidCredentialsException("Please enter correct details");
-        }
+        } 
+
+        String token = jwtUtil.generateToken(user.getUserName());
+        return LoginResponse.builder()
+                .userId(user.getId())
+                .userName(user.getUserName())
+                .token(token)
+                .build();
     }
 
     private User convertFromUserRequestToUser(UserRequest request) {
@@ -63,7 +74,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt(workFactor));
     }
 
-    private boolean checkPassword(String hashedPassword, String plainPassword) {
+    private boolean checkPassword(String plainPassword, String hashedPassword) {
         return BCrypt.checkpw(plainPassword, hashedPassword);
     }
 }

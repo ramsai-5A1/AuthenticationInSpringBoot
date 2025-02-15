@@ -15,7 +15,7 @@ import com.ecommerce2.dto.ErrorDetails;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<ErrorDetails> handleUserNotFoundException(InvalidCredentialsException ex) {
+    public ResponseEntity<ErrorDetails> handleInvalidCredentialsException(InvalidCredentialsException ex) {
         System.out.println("[GlobalExceptionHandler] Handling via InvalidCredentialsException Method");
         ErrorDetails response = ErrorDetails.builder()
                             .statusCode(HttpStatus.UNAUTHORIZED.value())
@@ -59,7 +59,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDetails> handleGeneralException(Exception ex) {
         System.out.println("[GlobalExceptionHandler] Handling via General Exception Method");
-        System.out.println(ex);
         ErrorDetails response = ErrorDetails.builder()
                             .statusCode(HttpStatus.BAD_REQUEST.value())
                             .message(ex.getMessage())

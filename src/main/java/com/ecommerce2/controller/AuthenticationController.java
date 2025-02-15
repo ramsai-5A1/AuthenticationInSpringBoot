@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ecommerce2.dto.LoginResponse;
 import com.ecommerce2.dto.UserRequest;
 import com.ecommerce2.dto.UserResponse;
 import com.ecommerce2.service.AuthenticationService;
@@ -30,8 +31,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponse> handleLogin(@Valid @RequestBody UserRequest request) {
-        UserResponse response = authenticationService.handleLogin(request);
+    public ResponseEntity<LoginResponse> handleLogin(@Valid @RequestBody UserRequest request) {
+        LoginResponse response = authenticationService.handleLogin(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
