@@ -35,7 +35,7 @@ public class OrderController {
         } 
 
         String token = authorizationHeader.substring(7);
-        OrderResponse response = orderService.placeOrder(token, request.getUserName());
+        OrderResponse response = orderService.placeOrder(token);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

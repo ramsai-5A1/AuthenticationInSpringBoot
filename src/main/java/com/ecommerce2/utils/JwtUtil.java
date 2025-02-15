@@ -9,6 +9,8 @@ import java.util.function.Function;
 
 import org.springframework.stereotype.Component;
 
+import com.ecommerce2.dto.ValidateTokenResponse;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
@@ -52,13 +54,25 @@ public class JwtUtil {
         return jwsClaims.getBody();
     }
 
-    public boolean validateToken(String token, String userName) {
+    public ValidateTokenResponse validateToken(String token) {
         try {
             Claims claims = extractAllClaims(token);
             String extractedUsername = extractUsername(token);
-            return (extractedUsername.equals(userName) && !isTokenExpired(token));
+            if (!isTokenExpired(token)) {
+                return ValidateTokenResponse.builder()
+                    .isValid(true)
+                    .userName(extractedUsername)
+                    .build();
+            }
+            return ValidateTokenResponse.builder()
+                    .isValid(false)
+                    .userName(null)
+                    .build();
         } catch (Exception ex) {
-            return false;
+            return ValidateTokenResponse.builder()
+            .isValid(false)
+            .userName(null)
+            .build();
         }
     }
 
