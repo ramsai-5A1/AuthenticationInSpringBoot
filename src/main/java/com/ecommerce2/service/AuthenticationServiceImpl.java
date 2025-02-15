@@ -52,6 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .userId(user.getId())
                 .userName(user.getUserName())
                 .token(token)
+                .message("Login successfull!!! Please hit the subsequent apis with this token as Bearer token in headers")
                 .build();
     }
 
