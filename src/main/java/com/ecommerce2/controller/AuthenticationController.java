@@ -30,6 +30,7 @@ public class AuthenticationController {
     @PostMapping("/signup")
     @Operation(summary = "Handle Signup", description = "This API is responsible for collecting details of user and creates new record in database")
     public ResponseEntity<UserResponse> handleSignup(@Valid @RequestBody UserRequest request) {
+        System.out.println("Reaching /signup api controller");
         UserResponse response = authenticationService.handleSignup(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -37,6 +38,8 @@ public class AuthenticationController {
     @PostMapping("/login")
     @Operation(summary = "Handle Login", description = "This API is responsibile for validating the password, if succeeds then returns back a JWT token with which we can make subsequent protected routes")
     public ResponseEntity<LoginResponse> handleLogin(@Valid @RequestBody UserRequest request) {
+        System.out.println("Reaching /login api controller");
+
         LoginResponse response = authenticationService.handleLogin(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

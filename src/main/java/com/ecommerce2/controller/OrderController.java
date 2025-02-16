@@ -34,6 +34,8 @@ public class OrderController {
     @PostMapping
     @Operation(summary = "Place Order API", description = "This is a protected API, which succeeds only if proper valid token is provided in Authorization section in postman. Once succeeds, then places the order")
     public ResponseEntity<OrderResponse> placeOrder(@RequestHeader("Authorization") String authorizationHeader, @Valid @RequestBody OrderRequest request) {
+        System.out.println("Reaching /placeOrder api controller");
+
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer")) {
             throw new ValidAuthTokenNotPresentException("Bearer token is not present");
         } 
